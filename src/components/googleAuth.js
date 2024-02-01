@@ -6,7 +6,6 @@ class GoogleAuth extends React.Component {
 
   signout = () => {
     window.localStorage.removeItem("userJwtToken");
-    // console.log(this);
     this.setState({ user: {} });
   };
 
@@ -22,6 +21,15 @@ class GoogleAuth extends React.Component {
     }
   };
 
+  signin = () => {
+    window.google.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+        document.cookie = `g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+        window.google.accounts.id.prompt();
+      }
+    });
+  };
+
   componentDidMount() {
     const jwtToken = JSON.parse(window.localStorage.getItem("userJwtToken"));
     console.log(jwtToken);
@@ -29,28 +37,22 @@ class GoogleAuth extends React.Component {
       const userObject = jwtDecode(jwtToken);
       console.log("jwt :", jwtToken);
       this.setState({ user: userObject });
-    } else {
-      window.google.accounts.id.initialize({
-        client_id:
-          "471972674150-ieddb11lmqgf9pfiu7egpmucqm0ldsmr.apps.googleusercontent.com",
-        callback: (response) => {
-          const userObject = jwtDecode(response.credential);
-          window.localStorage.setItem(
-            "userJwtToken",
-            JSON.stringify(response.credential)
-          );
-          this.setState({ user: userObject });
-        },
-      });
-
-      window.google.accounts.id.renderButton(
-        document.getElementById("signInDiv"),
-        {
-          theme: "outline",
-          size: "large",
-        }
-      );
     }
+
+    window.google.accounts.id.initialize({
+      client_id:
+        "471972674150-ieddb11lmqgf9pfiu7egpmucqm0ldsmr.apps.googleusercontent.com",
+      callback: (response) => {
+        const userObject = jwtDecode(response.credential);
+        window.localStorage.setItem(
+          "userJwtToken",
+          JSON.stringify(response.credential)
+        );
+        this.setState({ user: userObject });
+      },
+    });
+    console.log(window.google.accounts.id);
+
     this.renderButton();
   }
 
@@ -61,10 +63,20 @@ class GoogleAuth extends React.Component {
   render() {
     return (
       <div>
-        <div>
-          <div id="signInDiv"></div>
-        </div>
-        <button id="signOutDiv" onClick={this.signout}>
+        <button
+          id="signInDiv"
+          className="ui red google button"
+          onClick={this.signin}
+        >
+          <i className="google icon white" />
+          sign in
+        </button>
+        <button
+          id="signOutDiv"
+          className="ui red google button"
+          onClick={this.signout}
+        >
+          <i className="google icon white" />
           sign out
         </button>
       </div>
