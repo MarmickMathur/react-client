@@ -1,16 +1,17 @@
 import React from "react";
 import { jwtDecode } from "jwt-decode";
+import { connect } from "react-redux";
+import { signIn, signOut } from "../actions";
 
 class GoogleAuth extends React.Component {
-  state = { user: {} };
-
   signout = () => {
     window.localStorage.removeItem("userJwtToken");
-    this.setState({ user: {} });
+    this.props.signOut();
   };
 
   renderButton = () => {
-    if (Object.keys(this.state.user).length === 0) {
+    console.log(this.props.isSignedIn);
+    if (this.props.isSignedIn === null || this.props.isSignedIn === false) {
       console.log("needs sign in");
       document.getElementById("signInDiv").style.display = "block";
       document.getElementById("signOutDiv").style.display = "none";
@@ -27,7 +28,9 @@ class GoogleAuth extends React.Component {
         document.cookie = `g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`;
         window.google.accounts.id.prompt();
       }
+      // console.log(1);
     });
+    // console.log(2);
   };
 
   componentDidMount() {
@@ -37,26 +40,26 @@ class GoogleAuth extends React.Component {
       const userObject = jwtDecode(jwtToken);
       console.log("jwt :", jwtToken);
       this.setState({ user: userObject });
+      this.signIn();
     }
 
     window.google.accounts.id.initialize({
       client_id:
         "471972674150-ieddb11lmqgf9pfiu7egpmucqm0ldsmr.apps.googleusercontent.com",
       callback: (response) => {
-        const userObject = jwtDecode(response.credential);
         window.localStorage.setItem(
           "userJwtToken",
           JSON.stringify(response.credential)
         );
-        this.setState({ user: userObject });
+        // this.setState({ user: userObject });
+        this.props.signIn();
       },
     });
-    console.log(window.google.accounts.id);
-
     this.renderButton();
   }
 
   componentDidUpdate() {
+    console.log(this.props, "form component did update");
     this.renderButton();
   }
 
@@ -84,4 +87,8 @@ class GoogleAuth extends React.Component {
   }
 }
 
-export default GoogleAuth;
+const mapStateToProps = (state) => {
+  return { isSignedIn: state.auth.IsSignedIn };
+};
+
+export default connect(mapStateToProps, { signIn, signOut })(GoogleAuth);
