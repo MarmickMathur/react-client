@@ -1,6 +1,7 @@
-export const signIn = () => {
+export const signIn = (email) => {
   return {
     type: "SIGN_IN",
+    payload: email,
   };
 };
 

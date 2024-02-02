@@ -10,13 +10,13 @@ class GoogleAuth extends React.Component {
   };
 
   renderButton = () => {
-    console.log(this.props.isSignedIn);
+    // console.log(this.props.isSignedIn);
     if (this.props.isSignedIn === null || this.props.isSignedIn === false) {
-      console.log("needs sign in");
+      // console.log("needs sign in");
       document.getElementById("signInDiv").style.display = "block";
       document.getElementById("signOutDiv").style.display = "none";
     } else {
-      console.log("needs sign out");
+      // console.log("needs sign out");
       document.getElementById("signInDiv").style.display = "none";
       document.getElementById("signOutDiv").style.display = "block";
     }
@@ -28,19 +28,15 @@ class GoogleAuth extends React.Component {
         document.cookie = `g_state=;path=/;expires=Thu, 01 Jan 1970 00:00:01 GMT`;
         window.google.accounts.id.prompt();
       }
-      // console.log(1);
     });
-    // console.log(2);
   };
 
   componentDidMount() {
     const jwtToken = JSON.parse(window.localStorage.getItem("userJwtToken"));
-    console.log(jwtToken);
+    // console.log(jwtToken);
     if (jwtToken !== null) {
       const userObject = jwtDecode(jwtToken);
-      console.log("jwt :", jwtToken);
-      this.setState({ user: userObject });
-      this.signIn();
+      this.props.signIn(userObject.email);
     }
 
     window.google.accounts.id.initialize({
@@ -51,15 +47,14 @@ class GoogleAuth extends React.Component {
           "userJwtToken",
           JSON.stringify(response.credential)
         );
-        // this.setState({ user: userObject });
-        this.props.signIn();
+        const userObject = jwtDecode(jwtToken);
+        this.props.signIn(userObject.email);
       },
     });
     this.renderButton();
   }
 
   componentDidUpdate() {
-    console.log(this.props, "form component did update");
     this.renderButton();
   }
 
