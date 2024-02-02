@@ -7,14 +7,14 @@ class StreamList extends React.Component {
   renderError = ({ error, touched }) => {
     // console.log(error, touched);
     if (touched && error) {
-      console.log("returns error");
+      // console.log("returns error");
       return (
         <div className="ui error message">
           <div className="header"> {error}</div>
         </div>
       );
     } else {
-      console.log("returns null");
+      // console.log("returns null");
       return null;
     }
   };
@@ -35,7 +35,7 @@ class StreamList extends React.Component {
     );
   };
 
-  onSubmit = (formValues) => {
+  onSubmit = async (formValues) => {
     this.props.createStream(formValues);
     // console.log(formvalues);
   };
