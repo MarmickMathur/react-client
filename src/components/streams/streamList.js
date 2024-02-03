@@ -9,19 +9,24 @@ class StreamList extends React.Component {
   }
 
   renderAdmin = (stream) => {
-    console.log(stream);
     if (this.props.currentUserId === stream.userId) {
       return (
         <div className="right floated content">
-          <button className="ui button primary">edit</button>
-          <button className="ui button negative">delete</button>
+          <Link className="ui button primary" to={`/streams/edit/${stream.id}`}>
+            edit
+          </Link>
+          <Link
+            className="ui button negative"
+            to={`/streams/delete/${stream.id}`}
+          >
+            delete
+          </Link>
         </div>
       );
     }
   };
 
   renderCreate = () => {
-    console.log(this.props.isSignedIn);
     if (this.props.isSignedIn) {
       return (
         <div style={{ textAlign: "right" }}>

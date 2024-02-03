@@ -47,7 +47,7 @@ class GoogleAuth extends React.Component {
           "userJwtToken",
           JSON.stringify(response.credential)
         );
-        const userObject = jwtDecode(jwtToken);
+        const userObject = jwtDecode(response.credential);
         this.props.signIn(userObject.email);
       },
     });

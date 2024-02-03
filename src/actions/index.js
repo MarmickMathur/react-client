@@ -8,6 +8,7 @@ import {
   EDIT_STREAM,
   CREATE_STREAM,
 } from "./types";
+import history from "../history";
 
 export const signIn = (email) => {
   return {
@@ -30,8 +31,8 @@ export const createStream = (formValues) => {
       type: CREATE_STREAM,
       payload: res.data,
     });
+    history.push("/");
     // place for programatic navigation
-    
   };
 };
 
@@ -59,8 +60,11 @@ export const fetchStream = (id) => {
 
 export const editStream = (id, formValues) => {
   return async (dispatch, getState) => {
-    const res = await streams.put(`/streams/${id}`, formValues);
+    const userId = getState().auth.email;
+    const res = await streams.put(`/streams/${id}`, { ...formValues, userId });
     dispatch({ type: EDIT_STREAM, payload: res.data });
+    // console.log("ok edited");
+    history.push("/");
   };
 };
 
