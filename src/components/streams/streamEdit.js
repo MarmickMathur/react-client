@@ -9,9 +9,7 @@ class StreamEdit extends React.Component {
   }
 
   handleSubmit = (formValues) => {
-    // this.props.
-    // console.log(this.props.stream.id);
-    // console.log(formValues);
+    console.log(formValues);
     this.props.editStream(this.props.stream.id, formValues);
   };
 
@@ -19,7 +17,18 @@ class StreamEdit extends React.Component {
     if (!this.props.stream) {
       return <div>loading</div>;
     }
-    return <StreamForm onSubmit={this.handleSubmit} />;
+    return (
+      <div>
+        <h3>edit stream</h3>
+        <StreamForm
+          initialValues={{
+            title: this.props.stream.title,
+            description: this.props.stream.description,
+          }}
+          onSubmit={this.handleSubmit}
+        />
+      </div>
+    );
   }
 }
 

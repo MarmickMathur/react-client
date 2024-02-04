@@ -60,8 +60,8 @@ export const fetchStream = (id) => {
 
 export const editStream = (id, formValues) => {
   return async (dispatch, getState) => {
-    const userId = getState().auth.email;
-    const res = await streams.put(`/streams/${id}`, { ...formValues, userId });
+    console.log(formValues);
+    const res = await streams.patch(`/streams/${id}`, formValues);
     dispatch({ type: EDIT_STREAM, payload: res.data });
     // console.log("ok edited");
     history.push("/");
